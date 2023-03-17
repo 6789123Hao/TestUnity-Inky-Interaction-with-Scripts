@@ -18,7 +18,7 @@ public class DialogueTrigger : MonoBehaviour
     private void Update()
     {
         //if (InputManager.GetInstance().GetSubmitPressed()) 
-        if (Input.GetButtonUp("Say") && !DialogueManager.GetInstance().dialogueIsPlaying)
+        if (Input.GetButtonDown("Say") && !DialogueManager.GetInstance().dialogueIsPlaying)
         {
 
             Debug.Log("TriggerPressed");
