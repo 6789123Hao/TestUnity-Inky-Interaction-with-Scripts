@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PauseScreen : MonoBehaviour
 {
-    public Timer timer;
+/*    public Timer timer;*/
 
     // Called when ever enable as active
     private void OnEnable()
@@ -15,6 +15,6 @@ public class PauseScreen : MonoBehaviour
     private void OnDisable()
     {
         Time.timeScale = 1;
-        timer.TimerActive(true);
+/*        timer.TimerActive(true);*/
     }
 }

@@ -7,24 +7,15 @@ public class DialogueTrigger : MonoBehaviour
     [Header("Ink JSON")]
     [SerializeField] private TextAsset inkJSON;
 
-
-    [SerializeField] private GameObject cue;
-
     private void Awake()
     {
         
     }
 
-    private void Update()
-    {
-        //if (InputManager.GetInstance().GetSubmitPressed()) 
-        if (Input.GetButtonDown("Say") && !DialogueManager.GetInstance().dialogueIsPlaying)
-        {
+    public IEnumerator decideStory() {
+        yield return new WaitForSeconds(0.1f);
+        DialogueManager.GetInstance().EnterDialogueMode(inkJSON);
 
-            Debug.Log("TriggerPressed");
-            DialogueManager.GetInstance().EnterDialogueMode(inkJSON);
-        }
-        
     }
 
 }
