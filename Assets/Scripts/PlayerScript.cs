@@ -35,12 +35,12 @@ public class PlayerScript : MonoBehaviour
                 
         }
 
-
     }
 
     public void PausePanelActive()
     {
         pausePanel.gameObject.SetActive(true);
+
         isInControl = false;
     }
 }

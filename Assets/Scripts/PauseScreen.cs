@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class PauseScreen : MonoBehaviour
 {
-/*    public Timer timer;*/
-
+    /*    public Timer timer;*/
+    public DialogueManager diaManager;
     // Called when ever enable as active
     private void OnEnable()
     {
         Time.timeScale = 0;
+        diaManager.SetStopListening();
     }
 
     private void OnDisable()
     {
         Time.timeScale = 1;
-/*        timer.TimerActive(true);*/
+
+        diaManager.SetStartListening();
+        /*        timer.TimerActive(true);*/
     }
+
 }

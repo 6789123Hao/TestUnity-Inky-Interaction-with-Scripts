@@ -10,49 +10,54 @@ using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour
 {
-    // Singouton Class.
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialoguePanel;
-    [Header("Ink JSON")]
-    [SerializeField] private TextAsset inkJSON;
+
+    [SerializeField] private GameObject choicePanel;
+    [SerializeField] private TextMeshProUGUI dialogueText;
+
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
 
-    public bool dialogueIsPlaying { get; private set; }
-
-    public GameObject customButton;
-    public GameObject optionPanel;
-
     private Story currentStory;
-    List<string> tags;
+    public bool dialogueIsPlaying { get; private set; }
+    public bool listening { get; private set; }
 
-    [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private TextMeshProUGUI nameText;
-    static Choice choiceSelected;
-    private bool canContinueToNextLine;
-
-    public static DialogueManager instance { get; private set; }
+    private static DialogueManager instance;
 
     private void Awake()
     {
-        canContinueToNextLine = true;
-        dialogueIsPlaying = false;
-        if (instance != null) {
-            Debug.LogWarning("SHOULDN'T HAVE MORE THAN ONE INSTANCES");
+        if (instance != null)
+        {
+            Debug.LogWarning("Found more than one Dialogue Manager in the scene");
         }
         instance = this;
-
+        listening = true;
     }
 
-    public static DialogueManager GetInstance() {
+    public void HideUnhideDialogueBox() {
+        dialoguePanel.SetActive(!dialoguePanel.activeSelf);
+    }
+    public void SetStopListening()
+    {
+        listening = false;
+    }
+    public void SetStartListening()
+    {
+        listening = true;
+    }
+
+    public static DialogueManager GetInstance()
+    {
         return instance;
     }
+
     private void Start()
     {
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
-
+        choicePanel.SetActive(false);
         // get all of the choices text 
         choicesText = new TextMeshProUGUI[choices.Length];
         int index = 0;
@@ -61,167 +66,114 @@ public class DialogueManager : MonoBehaviour
             choicesText[index] = choice.GetComponentInChildren<TextMeshProUGUI>();
             index++;
         }
-
     }
 
     private void Update()
     {
-        //return if no dialouge is playing
-        if (!dialogueIsPlaying)
+       
+        // return right away if dialogue isn't playing
+        if (!dialogueIsPlaying || !listening)
         {
             return;
         }
-        //continue if next line is avalible and Say is pressed
-        //if (InputManager.GetInstance().GetSubmitPressed()) {
-        if (optionPanel.activeInHierarchy)
+
+        // handle continuing to the next line in the dialogue when submit is pressed
+        // NOTE: The 'currentStory.currentChoiecs.Count == 0' part was to fix a bug after the Youtube video was made
+        if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say"))
         {
-            Debug.Log("option Open");
-        } 
-        else 
+            ContinueStory();
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say")
-                && dialogueIsPlaying)
+            Debug.Log("Mouse1Pressed");
+            if (dialogueIsPlaying)
             {
-                ContinueStory();
-                Debug.Log("DiaManagerUpdatePressed");
+                HideUnhideDialogueBox();
             }
         }
-
-
     }
 
     public void EnterDialogueMode(TextAsset inkJSON)
     {
-        dialogueIsPlaying = true;
         currentStory = new Story(inkJSON.text);
+        dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
-        Debug.Log("EnterDialogueMode");
+        choicePanel.SetActive(false);
 
         ContinueStory();
     }
 
-    private void ContinueStory() {
+    private IEnumerator ExitDialogueMode()
+    {
+        dialoguePanel.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+
+        dialogueIsPlaying = false;
+        dialogueText.text = "";
+    }
+
+    private void ContinueStory()
+    {
         if (currentStory.canContinue)
         {
-            Debug.Log("canContinue");
-            AdvanceDiagloue();
-            /*dialogueText.text = currentStory.Continue();*/
-            if (currentStory.currentChoices.Count != 0) {
-                StartCoroutine(ShowChoices());
-            }
+            // set text for the current dialogue line
+            dialogueText.text = currentStory.Continue();
+            // display choices, if any, for this dialogue line
+            DisplayChoices();
         }
         else
         {
-
-            Debug.Log("ExitContinue");
             StartCoroutine(ExitDialogueMode());
         }
     }
 
-    void AdvanceDiagloue() {
-        string currentSentance = currentStory.Continue();
-        Debug.Log("current = " + currentSentance);
-        StopAllCoroutines();
-        StartCoroutine(TypeSentence(currentSentance));
-    
-    }
-
-    IEnumerator TypeSentence(string sentence) {
-        dialogueText.text = sentence;
-        dialogueText.maxVisibleCharacters = 0;
-
-        foreach (char letter in sentence.ToCharArray())
-        {
-            dialogueText.maxVisibleCharacters++;
-            yield return null;
-        }
-
-
-        yield return null;
-    }
-
-    private IEnumerator ExitDialogueMode()
+    private void DisplayChoices()
     {
-        dialogueIsPlaying = false;
-        dialoguePanel.SetActive(false);
-        dialogueText.text = "";
-        yield return new WaitForSeconds(0.2f);
-    }
-
-
-    IEnumerator ShowChoices() {
-        Debug.Log("ChoiceTime");
         List<Choice> currentChoices = currentStory.currentChoices;
-        if (currentChoices.Count > choices.Length) {
-            Debug.LogError("More choices were given than UI can support. choices #:" +
-                currentChoices.Count);
-        }
 
+        // defensive check to make sure our UI can support the number of choices coming in
+        if (currentChoices.Count > choices.Length)
+        {
+            Debug.LogError("More choices were given than the UI can support. Number of choices given: "
+                + currentChoices.Count);
+        }
         int index = 0;
-        foreach (Choice choice in currentChoices) {
+        // enable and initialize the choices up to the amount of choices for this line of dialogue
+        foreach (Choice choice in currentChoices)
+        {
             choices[index].gameObject.SetActive(true);
             choicesText[index].text = choice.text;
             index++;
         }
-
-        for (int i = index; i < choices.Length; i++) {
+        // go through the remaining choices the UI supports and make sure they're hidden
+        for (int i = index; i < choices.Length; i++)
+        {
             choices[i].gameObject.SetActive(false);
         }
 
-/*        for (int i = 0; i < _choices.Count; i++)
-        {
-            GameObject temp = Instantiate(customButton, optionPanel.transform);
-            if (temp != null)
-            {
-                temp.transform.GetChild(0).GetComponent<Text>().text = _choices[i].text;
-                temp.AddComponent<Selectable>();
-                temp.transform.GetChild(0).GetComponent<Text>().text = _choices[i].text;
-                temp.GetComponent<Button>().interactable = true;
-                temp.GetComponent<Button>().onClick.AddListener(() => SetDecision(-[i]));
-            }
-        }*/
-        if (optionPanel != null)
-        {
-
-            Debug.Log("optionPanel != null");
-            optionPanel.SetActive(true);
-            yield return new WaitUntil(() => { return choiceSelected != null; });
-        }
-        AdvanceFromDecision();
+        choicePanel.SetActive(true);
+        //StartCoroutine(SelectFirstChoice());
     }
-/*
-        // Tells the story which branch to go to
-        public void SetDecision(object element)
-        {
-            choiceSelected = (Choice)element;
-            currentStory.ChooseChoiceIndex(choiceSelected.index);
-        }*/
 
-    private void AdvanceFromDecision()
+    private IEnumerator SelectFirstChoice()
     {
-        optionPanel.SetActive(false);
-        for (int i = 0; i < optionPanel.transform.childCount; i++)
-        {
-            Destroy(optionPanel.transform.GetChild(i).gameObject);
-        }
-        choiceSelected = null;
 
-        AdvanceDiagloue();
+        // Event System requires we clear it first, then wait
+        // for at least one frame before we set the current selected object.
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+
+        EventSystem.current.SetSelectedGameObject(choices[0].gameObject);
     }
 
     public void MakeChoice(int choiceIndex)
     {
         currentStory.ChooseChoiceIndex(choiceIndex);
+        choicePanel.SetActive(false);
         // NOTE: The below two lines were added to fix a bug after the Youtube video was made
         InputManager.GetInstance().RegisterSubmitPressed(); // this is specific to my InputManager script
+
+        
         ContinueStory();
-    }
-    private IEnumerator SelectFirstChoice()
-    {
-        // Event System requires we clear it first, then wait
-        // for at least one frame before we set the current selected object.
-        EventSystem.current.SetSelectedGameObject(null);
-        yield return new WaitForEndOfFrame();
-        EventSystem.current.SetSelectedGameObject(choices[0].gameObject);
     }
 }
