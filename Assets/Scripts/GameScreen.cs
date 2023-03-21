@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameScreen : MonoBehaviour
 {
-    public TMP_Text tmpText;
+    //public TMP_Text tmpText;
     public PauseScreen pauseScreen;
 /*    public DeathScreen deathScreen;
     public Timer timer;*/
@@ -16,11 +16,11 @@ public class GameScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Cancel"))
         {
             PauseGame();
         }
-        tmpText.text = TotalPooCount.ToString();
+        //tmpText.text = TotalPooCount.ToString();
     }
 
     private void Start()
