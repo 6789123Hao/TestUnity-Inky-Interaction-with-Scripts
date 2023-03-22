@@ -16,15 +16,33 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject choicePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
+    [SerializeField] private TextMeshProUGUI SPEAKERText;
+    [SerializeField] private Animator portraitAnimator;
+
+
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
+
+
+
 
     private Story currentStory;
     public bool dialogueIsPlaying { get; private set; }
     public bool listening { get; private set; }
 
     private static DialogueManager instance;
+
+    List<string> tags;
+    private string[] splitTag;
+    private const string SPEAKER_TAG = "speaker";
+    private const string PORTRAIT_TAG = "portait";
+
+    private const string LAYOUT_TAG = "layout";
+
+    private const string Panel_TAG = "panel";
+
+
 
     private void Awake()
     {
@@ -81,6 +99,7 @@ public class DialogueManager : MonoBehaviour
         // NOTE: The 'currentStory.currentChoiecs.Count == 0' part was to fix a bug after the Youtube video was made
         if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say"))
         {
+            Debug.Log("SayFromDialogue");
             ContinueStory();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -119,12 +138,55 @@ public class DialogueManager : MonoBehaviour
             // set text for the current dialogue line
             dialogueText.text = currentStory.Continue();
             // display choices, if any, for this dialogue line
+
+
+            HandleTags(currentStory.currentTags);
             DisplayChoices();
         }
         else
         {
             StartCoroutine(ExitDialogueMode());
         }
+    }
+
+    private void HandleTags(List<string> currentTags)
+    {
+        if (currentTags == null) {
+            Debug.Log("Null Tags");
+            return;
+        }
+
+        Debug.Log("currentTags: " + currentTags.ToString());
+        // Loopthrough each tag
+        foreach (string tag in currentTags) {
+            splitTag = tag.Split(':');
+
+            string tagKey = splitTag[0].Trim();
+            string tagValue = splitTag[1].Trim();
+
+            switch (tagKey.ToLower())
+            {
+                default:
+                    Debug.LogWarning("Tag came in but is not being handled: " + tag);
+                    break;
+                case SPEAKER_TAG:
+                    Debug.Log(tagValue + " the SPEAKER_TAG");
+                    SetName(tagValue);
+                    break;
+                case PORTRAIT_TAG:
+                    Debug.Log(tagValue + " the PORTRAIT_TAG");
+                    portraitAnimator.Play(tagValue);
+                    break;
+                case LAYOUT_TAG:
+                    Debug.Log(tagValue + " the LAYOUT_TAG");
+                    break;
+            }
+        }
+    }
+
+    private void SetName(string tagValue)
+    {
+        SPEAKERText.text = tagValue;
     }
 
     private void DisplayChoices()

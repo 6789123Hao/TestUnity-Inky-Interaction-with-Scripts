@@ -26,6 +26,30 @@ MonoBehaviour:
     m_Localized: Ritiro
     m_Metadata:
       m_Items: []
+  - m_Id: 443658836168704
+    m_Localized: nuovo gioco
+    m_Metadata:
+      m_Items: []
+  - m_Id: 443708396064768
+    m_Localized: Continua
+    m_Metadata:
+      m_Items: []
+  - m_Id: 443733763215360
+    m_Localized: Impostazioni-ESC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 443787790045184
+    m_Localized: blablabla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 446994083794944
+    m_Localized: Sicuro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 447126418280448
+    m_Localized: Annulla
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -27,17 +27,8 @@ public class GameScreen : MonoBehaviour
     {
         //death = false;
         pauseScreen.gameObject.SetActive(false);
-        TotalPooCount = 1;
     }
 
-    public int GetTotalPoo()
-    {
-        return TotalPooCount;
-    }
-    public void SetTotalPoo(int n)
-    {
-        TotalPooCount = n;
-    }
 
 
     public void PauseGame() {

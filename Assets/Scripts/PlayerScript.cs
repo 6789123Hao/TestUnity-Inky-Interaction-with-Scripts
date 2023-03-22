@@ -32,7 +32,8 @@ public class PlayerScript : MonoBehaviour
         {
             StartCoroutine(trigger.decideStory());
             Debug.Log("TriggerPressed");
-                
+            Debug.Log("SayFromPlayer");
+
         }
 
     }

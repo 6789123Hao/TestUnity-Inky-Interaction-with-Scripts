@@ -11,6 +11,7 @@ public class PauseScreen : MonoBehaviour
     {
         Time.timeScale = 0;
         diaManager.SetStopListening();
+        Debug.Log("PasueStropListenPls");
     }
 
     private void OnDisable()
