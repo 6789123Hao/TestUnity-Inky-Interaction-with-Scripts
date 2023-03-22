@@ -63,8 +63,8 @@ public class DeathScreen : MonoBehaviour
 
 
       //get poo count, min = 1; update poo text and 
-      CurPoo = gameScreen.GetTotalPoo();
-      poopReport.text = CurPoo.ToString();
+      //CurPoo = gameScreen.GetTotalPoo();
+      //poopReport.text = CurPoo.ToString();
 
       stringTime = textTimer.text;
       highTime = PlayerPrefs.GetString("highTime", "00");
@@ -76,12 +76,12 @@ public class DeathScreen : MonoBehaviour
 
       //update highscore and total poo
       Scoretemp = PlayerPrefs.GetInt("highScore", 0);
-      if (CurPoo > Scoretemp)
+/*      if (CurPoo > Scoretemp)
       {
          PlayerPrefs.SetInt("highScore", CurPoo);
-      }
-      Scoretemp = PlayerPrefs.GetInt("TotalPoo", 0);
-      Scoretemp += CurPoo;
+      }*/
+      //Scoretemp = PlayerPrefs.GetInt("TotalPoo", 0);
+      //Scoretemp += CurPoo;
       PlayerPrefs.SetInt("TotalPoo", Scoretemp);
 
       Debug.Log("OnEnableDeathAdCount" +

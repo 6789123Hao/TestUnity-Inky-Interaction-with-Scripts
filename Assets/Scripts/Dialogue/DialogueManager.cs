@@ -18,6 +18,8 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI SPEAKERText;
     [SerializeField] private Animator portraitAnimator;
+    private AnimatorStateInfo animatorStateInfo;
+    [SerializeField] private Image VerticalCharPanel;
 
 
     [Header("Choices UI")]
@@ -41,6 +43,7 @@ public class DialogueManager : MonoBehaviour
     private const string LAYOUT_TAG = "layout";
 
     private const string Panel_TAG = "panel";
+    private const string CHAR_PANEL_TAG = "bodyup";
 
 
 
@@ -54,8 +57,24 @@ public class DialogueManager : MonoBehaviour
         listening = true;
     }
 
+    [Obsolete]
     public void HideUnhideDialogueBox() {
-        dialoguePanel.SetActive(!dialoguePanel.activeSelf);
+
+        if (dialoguePanel.activeSelf)
+        {
+            animatorStateInfo = portraitAnimator.GetCurrentAnimatorStateInfo
+                (portraitAnimator.GetLayerIndex("Base Layer"));
+
+            dialoguePanel.SetActive(false);
+        }
+        else {
+
+            dialoguePanel.SetActive(!dialoguePanel.activeSelf);
+            portraitAnimator.Play(animatorStateInfo.nameHash, 
+                portraitAnimator.GetLayerIndex("Base Layer"));
+
+        }
+
     }
     public void SetStopListening()
     {
@@ -97,7 +116,8 @@ public class DialogueManager : MonoBehaviour
 
         // handle continuing to the next line in the dialogue when submit is pressed
         // NOTE: The 'currentStory.currentChoiecs.Count == 0' part was to fix a bug after the Youtube video was made
-        if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say"))
+        if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say")
+            && dialoguePanel.activeSelf)
         {
             Debug.Log("SayFromDialogue");
             ContinueStory();
@@ -180,8 +200,16 @@ public class DialogueManager : MonoBehaviour
                 case LAYOUT_TAG:
                     Debug.Log(tagValue + " the LAYOUT_TAG");
                     break;
+                case CHAR_PANEL_TAG:
+                    SetBodyUpImage(tagValue);
+                    break;
             }
         }
+    }
+
+    private void SetBodyUpImage(string tagValue)
+    {
+        
     }
 
     private void SetName(string tagValue)

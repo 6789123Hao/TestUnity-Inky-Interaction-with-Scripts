@@ -89,8 +89,8 @@ public class GameScreen : MonoBehaviour
     public void OnPlayerDeath()
     {
         //death = true;
-        PlayerPrefs.SetInt("TotalDeath", 1 + 
-                            PlayerPrefs.GetInt("TotalDeath", 0));
+/*        PlayerPrefs.SetInt("TotalDeath", 1 + 
+                            PlayerPrefs.GetInt("TotalDeath", 0));*/
        // timer.TimerActive(false);
         gameObject.SetActive(false);
        // deathScreen.gameObject.SetActive(true);
