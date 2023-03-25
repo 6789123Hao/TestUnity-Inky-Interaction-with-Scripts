@@ -13,12 +13,19 @@ public class DialogueManager : MonoBehaviour
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialoguePanel;
 
+    [SerializeField] private GameObject textPanel;
+
     [SerializeField] private GameObject choicePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
     [SerializeField] private TextMeshProUGUI SPEAKERText;
     [SerializeField] private Animator portraitAnimator;
+    [SerializeField] private Animator layoutAnimator;
+
     private AnimatorStateInfo animatorStateInfo;
+    private AnimatorStateInfo layoutAnimatorStateInfo;
+
+    [Header("Body Up UI")]
     [SerializeField] private Image VerticalCharPanel;
 
 
@@ -59,10 +66,11 @@ public class DialogueManager : MonoBehaviour
 
     [Obsolete]
     public void HideUnhideDialogueBox() {
-
         if (dialoguePanel.activeSelf)
         {
             animatorStateInfo = portraitAnimator.GetCurrentAnimatorStateInfo
+                (portraitAnimator.GetLayerIndex("Base Layer"));
+            layoutAnimatorStateInfo = layoutAnimator.GetCurrentAnimatorStateInfo
                 (portraitAnimator.GetLayerIndex("Base Layer"));
 
             dialoguePanel.SetActive(false);
@@ -72,6 +80,8 @@ public class DialogueManager : MonoBehaviour
             dialoguePanel.SetActive(!dialoguePanel.activeSelf);
             portraitAnimator.Play(animatorStateInfo.nameHash, 
                 portraitAnimator.GetLayerIndex("Base Layer"));
+            layoutAnimator.Play(layoutAnimatorStateInfo.nameHash,
+                layoutAnimator.GetLayerIndex("Base Layer"));
 
         }
 
@@ -95,6 +105,7 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         choicePanel.SetActive(false);
+        layoutAnimator = textPanel.GetComponent<Animator>();
         // get all of the choices text 
         choicesText = new TextMeshProUGUI[choices.Length];
         int index = 0;
@@ -191,6 +202,13 @@ public class DialogueManager : MonoBehaviour
                     break;
                 case SPEAKER_TAG:
                     Debug.Log(tagValue + " the SPEAKER_TAG");
+                    if (tagValue == "")
+                    {
+                        layoutAnimator.Play("noName");
+                    }
+                    else {
+                        layoutAnimator.Play("withNamewithFace");
+                    }
                     SetName(tagValue);
                     break;
                 case PORTRAIT_TAG:
@@ -199,6 +217,7 @@ public class DialogueManager : MonoBehaviour
                     break;
                 case LAYOUT_TAG:
                     Debug.Log(tagValue + " the LAYOUT_TAG");
+                    layoutAnimator.Play(tagValue);
                     break;
                 case CHAR_PANEL_TAG:
                     SetBodyUpImage(tagValue);

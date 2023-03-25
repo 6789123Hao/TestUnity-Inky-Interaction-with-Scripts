@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterObject : MonoBehaviour
+public class StatsManager : MonoBehaviour
 {
     // Start is called before the first frame update
+
+    [SerializeField] private GameObject displayPanel;
+
     void Start()
     {
         

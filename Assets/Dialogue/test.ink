@@ -2,13 +2,14 @@
 
 
 === main ===
-#layout:left
+#layout:noName
 ...
 #speaker:Bob #portait:bob_default 
 ......
-#speaker:Katty #portait:katty_happy
+#speaker:Katty #portait:katty_happy #bodyup:
 啊 你醒了吗?
-#speaker:Bob #portait:bob_default
+#speaker:Bob #portait:bob_default 
+#layout:withNamewithFace
 什么?
 #speaker:Katty #portait:katty_happy
 啊 没事你先躺好 我去给你倒点水
@@ -26,8 +27,9 @@
 ......
 #panel:off
 #panel:on
+-
 #speaker:Katty #portait:katty_happy
--你又睡着了呀?
+你又睡着了呀?
 还好!茶还没凉,先喝一口吧.
 
 #speaker:Bob #portait:bob_default
