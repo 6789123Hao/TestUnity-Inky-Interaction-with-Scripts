@@ -10,12 +10,17 @@ using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("Params")]
+    [SerializeField] private float typingSpeed = 0.02f;
+
+
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialoguePanel;
 
     [SerializeField] private GameObject textPanel;
 
     [SerializeField] private GameObject choicePanel;
+    [SerializeField] private GameObject iconContinue;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
     [SerializeField] private TextMeshProUGUI SPEAKERText;
@@ -33,7 +38,8 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
 
-
+    private Coroutine displayLineCoroutine;
+    private bool canContinueToNextLine = false;
 
 
     private Story currentStory;
@@ -64,6 +70,8 @@ public class DialogueManager : MonoBehaviour
         listening = true;
     }
 
+
+    //hide entire dialogue UI and save the animation states of layout and portait
     [Obsolete]
     public void HideUnhideDialogueBox() {
         if (dialoguePanel.activeSelf)
@@ -86,9 +94,12 @@ public class DialogueManager : MonoBehaviour
         }
 
     }
-    public void SetStopListening()
+
+
+    //listening boll controller
+    public void SetListening(bool boolean)
     {
-        listening = false;
+        listening = boolean;
     }
     public void SetStartListening()
     {
@@ -128,7 +139,7 @@ public class DialogueManager : MonoBehaviour
         // handle continuing to the next line in the dialogue when submit is pressed
         // NOTE: The 'currentStory.currentChoiecs.Count == 0' part was to fix a bug after the Youtube video was made
         if (currentStory.currentChoices.Count == 0 && Input.GetButtonDown("Say")
-            && dialoguePanel.activeSelf)
+            && dialoguePanel.activeSelf && canContinueToNextLine)
         {
             Debug.Log("SayFromDialogue");
             ContinueStory();
@@ -149,7 +160,11 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
         choicePanel.SetActive(false);
-
+        //reset animator layout and portrait
+        dialogueText.text = "";
+        SPEAKERText.text = "???";
+        portraitAnimator.Play("default");
+        layoutAnimator.Play("default");
         ContinueStory();
     }
 
@@ -166,17 +181,65 @@ public class DialogueManager : MonoBehaviour
     {
         if (currentStory.canContinue)
         {
+            if (displayLineCoroutine != null) {
+                StopCoroutine(displayLineCoroutine);
+            }
             // set text for the current dialogue line
-            dialogueText.text = currentStory.Continue();
+            displayLineCoroutine = StartCoroutine(DisplayLine(currentStory.Continue()));
             // display choices, if any, for this dialogue line
 
 
             HandleTags(currentStory.currentTags);
-            DisplayChoices();
         }
         else
         {
             StartCoroutine(ExitDialogueMode());
+        }
+    }
+
+    private IEnumerator DisplayLine(string line) {
+        HideChoices();
+        iconContinue.SetActive(false);
+        canContinueToNextLine = false;
+        dialogueText.text = line;
+        dialogueText.maxVisibleCharacters = 0;
+
+        bool isAddingRichTextTag = false;
+
+        foreach (char letter in line.ToCharArray())
+        {
+            //if adding richtext tag, skip display tag info </color><color>
+            if (letter == '<' || isAddingRichTextTag)
+            {
+                isAddingRichTextTag = true;
+                dialogueText.text += letter;
+                if (letter == '>') {
+                    isAddingRichTextTag = false;
+                }
+            }
+            else //normal displayment
+            {
+                dialogueText.maxVisibleCharacters++;
+                yield return new WaitForSeconds(typingSpeed);
+            }
+            //Speedup displayment
+            if (Input.GetButtonDown("Say"))
+            {
+                Debug.Log("length = " + line.Length);
+                dialogueText.maxVisibleCharacters = line.Length;
+                break;
+            }
+        }
+
+        DisplayChoices();
+        canContinueToNextLine = true;
+        iconContinue.SetActive(true);
+    }
+
+    private void HideChoices()
+    {
+        foreach (GameObject choiceBtn in choices) {
+            choiceBtn.SetActive(false);
         }
     }
 
@@ -207,7 +270,7 @@ public class DialogueManager : MonoBehaviour
                         layoutAnimator.Play("noName");
                     }
                     else {
-                        layoutAnimator.Play("withNamewithFace");
+                        layoutAnimator.Play("addName");
                     }
                     SetName(tagValue);
                     break;
@@ -277,12 +340,15 @@ public class DialogueManager : MonoBehaviour
 
     public void MakeChoice(int choiceIndex)
     {
-        currentStory.ChooseChoiceIndex(choiceIndex);
-        choicePanel.SetActive(false);
-        // NOTE: The below two lines were added to fix a bug after the Youtube video was made
-        InputManager.GetInstance().RegisterSubmitPressed(); // this is specific to my InputManager script
+        if (canContinueToNextLine) {
+            currentStory.ChooseChoiceIndex(choiceIndex);
+            choicePanel.SetActive(false);
+            // NOTE: The below two lines were added to fix a bug after the Youtube video was made
+            InputManager.GetInstance().RegisterSubmitPressed(); // this is specific to my InputManager script
 
-        
-        ContinueStory();
+
+            ContinueStory();
+        }
+
     }
 }

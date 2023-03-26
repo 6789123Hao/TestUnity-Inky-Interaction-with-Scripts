@@ -10,7 +10,7 @@ public class PauseScreen : MonoBehaviour
     private void OnEnable()
     {
         Time.timeScale = 0;
-        diaManager.SetStopListening();
+        diaManager.SetListening(false);
         Debug.Log("PasueStropListenPls");
     }
 

@@ -542,7 +542,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
+    rgba: 4287883517
   m_fontColor: {r: 0.990566, g: 0.9084006, b: 0.5747152, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -560,7 +560,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 35.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -803,6 +803,7 @@ GameObject:
   - component: {fileID: 421917262}
   - component: {fileID: 421917261}
   - component: {fileID: 421917263}
+  - component: {fileID: 421917264}
   m_Layer: 5
   m_Name: ChoicesPanel
   m_TagString: Untagged
@@ -819,7 +820,7 @@ RectTransform:
   m_GameObject: {fileID: 421917259}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 112331114}
@@ -898,6 +899,26 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &421917264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421917259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!224 &498146528 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 331250713727473419, guid: 6af4034c25bada04ca01ccd54015c918, type: 3}
@@ -1078,7 +1099,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
+    rgba: 4287883517
   m_fontColor: {r: 0.990566, g: 0.9084006, b: 0.5747152, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1096,7 +1117,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 35.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2369,7 +2390,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
+    rgba: 4287883517
   m_fontColor: {r: 0.990566, g: 0.9084006, b: 0.5747152, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2387,7 +2408,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 35.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3361,7 +3382,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
+    rgba: 4287883517
   m_fontColor: {r: 0.990566, g: 0.9084006, b: 0.5747152, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3379,7 +3400,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 35.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3882,9 +3903,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0465333dea9f9874f89a2e34af4a24ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  typingSpeed: 0.02
   dialoguePanel: {fileID: 1408243819}
   textPanel: {fileID: 850930982}
   choicePanel: {fileID: 421917259}
+  iconContinue: {fileID: 1286774036}
   dialogueText: {fileID: 785787936}
   SPEAKERText: {fileID: 1561288401}
   portraitAnimator: {fileID: 664377708}

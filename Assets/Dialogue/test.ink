@@ -6,10 +6,11 @@
 ...
 #speaker:Bob #portait:bob_default 
 ......
+我是突然出现的一句超过<color=\#F8FF30>三行的句子</color>我也不知道english haoxiang hui biande henqi guaiguaiguaiguai 会变成什么样如果没有空格我还是我吗句子还是句子吗问句还能表达吗伦理还是守恒吗我很在意
 #speaker:Katty #portait:katty_happy #bodyup:
 啊 你醒了吗?
 #speaker:Bob #portait:bob_default 
-#layout:withNamewithFace
+#layout:default
 什么?
 #speaker:Katty #portait:katty_happy
 啊 没事你先躺好 我去给你倒点水
