@@ -13,6 +13,9 @@ public class DialogueManager : MonoBehaviour
     [Header("Params")]
     [SerializeField] private float typingSpeed = 0.02f;
 
+    [Header("Load Globals JSON")]
+    [SerializeField] private TextAsset loadGlobalsJSON;
+
 
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialoguePanel;
@@ -58,7 +61,7 @@ public class DialogueManager : MonoBehaviour
     private const string Panel_TAG = "panel";
     private const string CHAR_PANEL_TAG = "bodyup";
 
-
+    private DialogueVariables dialogueVariables;
 
     private void Awake()
     {
@@ -68,6 +71,7 @@ public class DialogueManager : MonoBehaviour
         }
         instance = this;
         listening = true;
+        dialogueVariables = new DialogueVariables(loadGlobalsJSON);
     }
 
 
@@ -159,7 +163,12 @@ public class DialogueManager : MonoBehaviour
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
+        Debug.Log("EEENNNTTEEERR");
+
         choicePanel.SetActive(false);
+
+        dialogueVariables.StartListening(currentStory);
+
         //reset animator layout and portrait
         dialogueText.text = "";
         SPEAKERText.text = "???";
@@ -172,7 +181,7 @@ public class DialogueManager : MonoBehaviour
     {
         dialoguePanel.SetActive(false);
         yield return new WaitForSeconds(0.2f);
-
+        dialogueVariables.StopListening(currentStory);
         dialogueIsPlaying = false;
         dialogueText.text = "";
     }
@@ -211,6 +220,7 @@ public class DialogueManager : MonoBehaviour
             //if adding richtext tag, skip display tag info </color><color>
             if (letter == '<' || isAddingRichTextTag)
             {
+                Debug.Log(letter);
                 isAddingRichTextTag = true;
                 dialogueText.text += letter;
                 if (letter == '>') {
@@ -350,5 +360,14 @@ public class DialogueManager : MonoBehaviour
             ContinueStory();
         }
 
+    }
+
+    public Ink.Runtime.Object GetVariableState(string variableName) {
+        Ink.Runtime.Object variableValue = null;
+        dialogueVariables.variables.TryGetValue(variableName, out variableValue);
+        if (variableValue == null) {
+            Debug.LogWarning("Ink Variable was found tb null: " + variableName);
+        }
+        return variableValue;
     }
 }

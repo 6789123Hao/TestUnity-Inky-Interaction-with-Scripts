@@ -3904,6 +3904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typingSpeed: 0.02
+  loadGlobalsJSON: {fileID: 4900000, guid: eb4622d2e2ba4f04bb249c5ef25c6f56, type: 3}
   dialoguePanel: {fileID: 1408243819}
   textPanel: {fileID: 850930982}
   choicePanel: {fileID: 421917259}
