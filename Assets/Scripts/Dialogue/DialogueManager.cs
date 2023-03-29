@@ -62,6 +62,7 @@ public class DialogueManager : MonoBehaviour
     private const string CHAR_PANEL_TAG = "bodyup";
 
     private DialogueVariables dialogueVariables;
+    private Story _inkStory;
 
     private void Awake()
     {
@@ -72,6 +73,7 @@ public class DialogueManager : MonoBehaviour
         instance = this;
         listening = true;
         dialogueVariables = new DialogueVariables(loadGlobalsJSON);
+        _inkStory = new Story(loadGlobalsJSON.text);
     }
 
 
@@ -160,6 +162,9 @@ public class DialogueManager : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON)
     {
+        
+        int playedTimes = ((Ink.Runtime.IntValue)GetVariableState("games_played")).value;
+        Debug.Log("Played: " + playedTimes);
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
@@ -184,6 +189,9 @@ public class DialogueManager : MonoBehaviour
         dialogueVariables.StopListening(currentStory);
         dialogueIsPlaying = false;
         dialogueText.text = "";
+
+        SaveJason();
+
     }
 
     private void ContinueStory()
@@ -206,6 +214,21 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void SaveJason() {
+        if (dialogueVariables != null)
+        {
+            dialogueVariables.SaveVariables();
+        }
+        else {
+            Debug.Log("dialogueVar null");
+        }
+    }
+    private void LoadJason()
+    {
+        
+    }
+
+
     private IEnumerator DisplayLine(string line) {
         HideChoices();
         iconContinue.SetActive(false);
@@ -220,7 +243,7 @@ public class DialogueManager : MonoBehaviour
             //if adding richtext tag, skip display tag info </color><color>
             if (letter == '<' || isAddingRichTextTag)
             {
-                Debug.Log(letter);
+                //Debug.Log(letter);
                 isAddingRichTextTag = true;
                 dialogueText.text += letter;
                 if (letter == '>') {
@@ -245,7 +268,10 @@ public class DialogueManager : MonoBehaviour
         canContinueToNextLine = true;
         iconContinue.SetActive(true);
     }
-
+    public void ToFive()
+    {
+        
+    }
     private void HideChoices()
     {
         foreach (GameObject choiceBtn in choices) {
@@ -354,7 +380,6 @@ public class DialogueManager : MonoBehaviour
             currentStory.ChooseChoiceIndex(choiceIndex);
             choicePanel.SetActive(false);
             // NOTE: The below two lines were added to fix a bug after the Youtube video was made
-            InputManager.GetInstance().RegisterSubmitPressed(); // this is specific to my InputManager script
 
 
             ContinueStory();
@@ -369,5 +394,10 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning("Ink Variable was found tb null: " + variableName);
         }
         return variableValue;
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveJason();
     }
 }

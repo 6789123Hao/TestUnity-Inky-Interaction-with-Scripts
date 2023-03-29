@@ -7,7 +7,7 @@ INCLUDE globals.ink
 ... {random_line}
 #speaker:Bob #portait:bob_default 
 ......
-我是突然出现的一句超过<color=\#F8FF30>三行的句子</color>我也不知道english haoxiang hui biande henqi guaiguaiguaiguai 会变成什么样如果没有空格我还是我吗句子还是句子吗问句还能表达吗伦理还是守恒吗我很在意
+我是突然出现的{games_played}句超过<color=\#F8FF30>三行的句子</color>我也不知道english haoxiang hui biande henqi guaiguaiguaiguai 会变成什么样如果没有空格我还是我吗句子还是句子吗问句还能表达吗伦理还是守恒吗我很在意
 #speaker:Katty #portait:katty_happy #bodyup:
 啊 你醒了吗?
 #speaker:Bob #portait:bob_default 
@@ -35,6 +35,11 @@ INCLUDE globals.ink
 ...
 哦..
 
+#speaker:Katty #portait:katty_happy
+你想见谁？
+
+~ games_played++
+
 -> END
 
 ===Choice1===
@@ -58,7 +63,7 @@ rl = {random_line}
 
 === Choosen ===
 我刚才选了啥来着？
-<color=\#F8FF30>{random_line}
+{random_line}
 ~ random_line = ""
 ->main2
 

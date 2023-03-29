@@ -7,10 +7,21 @@ public class DialogueVariables
 
     public Dictionary<string, Ink.Runtime.Object> variables { get; private set; }
 
-    public DialogueVariables(TextAsset loadingGlobalsJSON) {
+    private Story globalVariablesStory;
+    private const string saveVariablesKey = "INK_VARIABLES";
 
-        Story globalVariablesStory = new Story(loadingGlobalsJSON.text);
+    public DialogueVariables(TextAsset loadingGlobalsJSON) 
+    {
+        //create story
+        globalVariablesStory = new Story(loadingGlobalsJSON.text);
+        //check saved data exist
+        if (PlayerPrefs.HasKey(saveVariablesKey)) {
 
+            string jsonState = PlayerPrefs.GetString(saveVariablesKey);
+            globalVariablesStory.state.LoadJson(jsonState);
+        }
+
+        //initialize dictionary
         variables = new Dictionary<string, Ink.Runtime.Object>();
         foreach (string name in globalVariablesStory.variablesState) {
 
@@ -21,16 +32,28 @@ public class DialogueVariables
         }
     }
 
+    //variable observer function
     private void VariableChanged(string name, Ink.Runtime.Object value) 
     {
 
-        Debug.Log("Variable changed: " + name + value);
+        Debug.Log("Variable changed: " + name + " " + value);
         if (variables.ContainsKey(name)) {
 
             variables.Remove(name);
             variables.Add(name, value);
         }
         
+    }
+
+    public void SaveVariables() {
+
+        if (globalVariablesStory != null) {
+            //Load state of all cur variables to global
+            VariablesToStory(globalVariablesStory);
+            //save global tojson to the unity playerprefs.
+            PlayerPrefs.SetString(saveVariablesKey, globalVariablesStory.state.ToJson());
+        }
+    
     }
 
     private void VariablesToStory(Story story) {
