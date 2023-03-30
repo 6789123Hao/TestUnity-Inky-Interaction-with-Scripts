@@ -201,12 +201,19 @@ public class DialogueManager : MonoBehaviour
             if (displayLineCoroutine != null) {
                 StopCoroutine(displayLineCoroutine);
             }
-            // set text for the current dialogue line
-            displayLineCoroutine = StartCoroutine(DisplayLine(currentStory.Continue()));
-            // display choices, if any, for this dialogue line
+            string nextLine = currentStory.Continue();
 
+            if (nextLine.Equals("") && !currentStory.canContinue)
+            {
+                StartCoroutine(ExitDialogueMode());
+            }
+            else {
+                // set text for the current dialogue line
+                displayLineCoroutine = StartCoroutine(DisplayLine(nextLine));
+                // display choices, if any, for this dialogue line
+                HandleTags(currentStory.currentTags);
+            }
 
-            HandleTags(currentStory.currentTags);
         }
         else
         {
